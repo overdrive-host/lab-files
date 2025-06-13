@@ -1,0 +1,178 @@
+<div class="horas-extras-container">
+    <h2>Horas Extras</h2>
+    <div class="tabs-container">
+        <button id="crear-hora-extra-btn" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Crear Registro
+        </button>
+    </div>
+    <div class="divider"></div>
+    <div class="horas-extras-list-container">
+        <ul id="horas-extras-list" class="horas-extras-list"></ul>
+    </div>
+</div>
+
+<div id="hora-extra-modal" class="modal" style="display: none;">
+    <div class="edit-modal-content">
+        <h2 id="hora-extra-modal-title">Crear Nuevo Registro</h2>
+        <div class="edit-form-container">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="hora-extra-titulo">Nombre del Trabajador</label>
+                    <input type="text" id="hora-extra-titulo" class="wide-input" placeholder="Ingrese el nombre del trabajador" required>
+                </div>
+                <div class="form-group">
+                    <label for="hora-extra-mes">Mes</label>
+                    <input type="month" id="hora-extra-mes" class="wide-input" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Horas Extras al 50%</label>
+                    <div class="entradas-container">
+                        <table class="entradas-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Hora Entrada</th>
+                                    <th>Hora Salida</th>
+                                    <th>Total (Horas)</th>
+                                    <th>Motivo</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="entradas-list-50"></tbody>
+                        </table>
+                        <button id="add-horas-50-btn" class="btn btn-primary" style="margin-top: 10px;">
+                            <i class="fas fa-plus"></i> Agregar Horas al 50%
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Horas Extras al 100%</label>
+                    <div class="entradas-container">
+                        <table class="entradas-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Hora Entrada</th>
+                                    <th>Hora Salida</th>
+                                    <th>Total (Horas)</th>
+                                    <th>Motivo</th>
+                                    <th>Movilización</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="entradas-list-100"></tbody>
+                        </table>
+                        <button id="add-horas-100-btn" class="btn btn-primary" style="margin-top: 10px;">
+                            <i class="fas fa-plus"></i> Agregar Horas al 100%
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Bonos de Llamado</label>
+                    <div class="entradas-container">
+                        <table class="entradas-table">
+                            <thead>
+                                <tr>
+                                    <th>Turno de Llamado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bonos-llamado-list"></tbody>
+                        </table>
+                        <button id="add-bono-llamado-btn" class="btn btn-primary" style="margin-top: 10px;">
+                            <i class="fas fa-dollar-sign"></i> Agregar Bono de Llamado
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row form-group-button">
+                <button id="save-hora-extra-btn" class="btn btn-primary">Guardar</button>
+                <button id="download-excel-btn" class="btn btn-primary"><i class="fas fa-file-excel"></i> Descargar Excel</button>
+                <button id="cancel-hora-extra-btn" class="btn btn-secondary">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="entrada-modal" class="modal" style="display: none;">
+    <div class="edit-modal-content">
+        <h2 id="entrada-modal-title">Agregar Entrada</h2>
+        <div class="edit-form-container">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="entrada-fecha">Fecha</label>
+                    <input type="date" id="entrada-fecha" class="wide-input" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="entrada-hora-entrada">Hora Entrada</label>
+                    <input type="time" id="entrada-hora-entrada" class="wide-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="entrada-hora-salida">Hora Salida</label>
+                    <input type="time" id="entrada-hora-salida" class="wide-input" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="entrada-motivo">Motivo</label>
+                    <textarea id="entrada-motivo" class="wide-input motivo-textarea" rows="4" placeholder="Turno de llamado"></textarea>
+                </div>
+            </div>
+            <div class="form-row form-group-button">
+                <button id="save-entrada-btn" class="btn btn-primary">Guardar Entrada</button>
+                <button id="cancel-entrada-btn" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="bono-llamado-modal" class="modal" style="display: none;">
+    <div class="edit-modal-content">
+        <h2 id="bono-llamado-modal-title">Agregar Bono de Llamado</h2>
+        <div class="edit-form-container">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="bono-fecha-inicio">Fecha Inicio</label>
+                    <input type="date" id="bono-fecha-inicio" class="wide-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="bono-fecha-final">Fecha Final</label>
+                    <input type="date" id="bono-fecha-final" class="wide-input" required>
+                </div>
+            </div>
+            <div class="form-row form-group-button">
+                <button id="save-bono-btn" class="btn btn-primary">Guardar Bono</button>
+                <button id="cancel-bono-btn" class="btn btn-secondary">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="delete-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <p id="delete-message">¿Estás seguro de que deseas eliminar este registro?</p>
+        <div class="modal-buttons">
+            <button id="confirm-delete-btn" class="btn btn-danger">Eliminar</button>
+            <button id="cancel-delete-btn" class="btn btn-secondary">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div id="success-modal" class="modal success-modal">
+    <div class="modal-content">
+        <div class="success-message-container">
+            <i id="success-icon" class="fas"></i>
+            <span class="success-message"></span>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="horas-extras.js"></script>
