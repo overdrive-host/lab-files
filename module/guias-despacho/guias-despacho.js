@@ -12,7 +12,6 @@ const firebaseConfig = {
   measurementId: "G-WVFF0MK5F0"
 };
 
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -104,9 +103,10 @@ async function loadGuias(searchTerm = '') {
 
 function renderDetalles(detallesList, detalles) {
     detallesList.innerHTML = '';
-    detalles.forEach(item => {
+    detalles.forEach((item, index) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
+            <td>${index + 1}</td>
             <td>${item.nombre || '-'}</td>
             <td>${item.codigo || '-'}</td>
             <td>${Math.round(parseFloat(item.cantidad) || 0)}</td>
@@ -159,8 +159,8 @@ function generatePDF(data) {
     doc.rect(margin, y, maxWidth, 10, "F");
     y = addText("Detalles de los Ítems", margin + 5, y + 5, 10, maxWidth, true);
 
-    const headers = ["Nombre", "Código", "Cantidad", "Lote", "Vencimiento"];
-    const colWidths = [50, 30, 20, 40, 40];
+    const headers = ["Items", "Nombre", "Código", "Cantidad", "Lote", "Vencimiento"];
+    const colWidths = [20, 50, 30, 20, 40, 30];
     const colSpacing = 1;
     let x = margin;
     doc.setFillColor(200, 200, 200);
@@ -173,7 +173,7 @@ function generatePDF(data) {
 
     (data.detalles || []).forEach((item, index) => {
         x = margin;
-        const descLines = doc.splitTextToSize(item.nombre || "-", colWidths[0]);
+        const descLines = doc.splitTextToSize(item.nombre || "-", colWidths[1]);
         const rowHeight = Math.max(descLines.length * 4, 10);
         if (y + rowHeight > doc.internal.pageSize.getHeight() - margin) {
             doc.addPage();
@@ -189,15 +189,17 @@ function generatePDF(data) {
         }
         doc.setFillColor(index % 2 === 0 ? 255 : 240, 245, 255);
         doc.rect(margin, y, maxWidth, rowHeight, "F");
-        doc.text(descLines, x + 2, y + (rowHeight / 2), { maxWidth: colWidths[0] });
+        doc.text((index + 1).toString(), x + 2, y + (rowHeight / 2), { maxWidth: colWidths[0], align: "center" });
         x += colWidths[0] + colSpacing;
-        doc.text(item.codigo || "-", x + 2, y + (rowHeight / 2), { maxWidth: colWidths[1], align: "center" });
+        doc.text(descLines, x + 2, y + (rowHeight / 2), { maxWidth: colWidths[1] });
         x += colWidths[1] + colSpacing;
-        doc.text(Math.round(parseFloat(item.cantidad) || 0).toString(), x + 2, y + (rowHeight / 2), { maxWidth: colWidths[2], align: "center" });
+        doc.text(item.codigo || "-", x + 2, y + (rowHeight / 2), { maxWidth: colWidths[2], align: "center" });
         x += colWidths[2] + colSpacing;
-        doc.text(item.descripcion || "-", x + 2, y + (rowHeight / 2), { maxWidth: colWidths[3], align: "center" });
+        doc.text(Math.round(parseFloat(item.cantidad) || 0).toString(), x + 2, y + (rowHeight / 2), { maxWidth: colWidths[3], align: "center" });
         x += colWidths[3] + colSpacing;
-        doc.text(item.fechaVencimiento || "-", x + 2, y + (rowHeight / 2), { maxWidth: colWidths[4], align: "center" });
+        doc.text(item.descripcion || "-", x + 2, y + (rowHeight / 2), { maxWidth: colWidths[4], align: "center" });
+        x += colWidths[4] + colSpacing;
+        doc.text(item.fechaVencimiento || "-", x + 2, y + (rowHeight / 2), { maxWidth: colWidths[5], align: "center" });
         y += rowHeight;
     });
 
@@ -363,6 +365,7 @@ function initializeModule() {
         'save-guia-btn': 'Botón para guardar guía',
         'download-pdf-btn': 'Botón para visualizar PDF',
         'cancel-guia-btn': 'Botón para cancelar guía',
+        'close-guia-btn': 'Botón para cerrar modal',
         'delete-modal': 'Modal de eliminación',
         'confirm-delete-btn': 'Botón para confirmar eliminación',
         'cancel-delete-btn': 'Botón para cancelar eliminación',
@@ -387,6 +390,7 @@ function initializeModule() {
     const saveGuiaBtn = document.getElementById('save-guia-btn');
     const downloadPdfBtn = document.getElementById('download-pdf-btn');
     const cancelGuiaBtn = document.getElementById('cancel-guia-btn');
+    const closeGuiaBtn = document.getElementById('close-guia-btn');
     const xmlFileInput = document.getElementById('xml-file-input');
     const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
     const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
@@ -407,6 +411,12 @@ function initializeModule() {
         window.open(pdfUrl, '_blank');
     });
     cancelGuiaBtn.addEventListener('click', () => {
+        const guiaModal = document.getElementById('guia-modal');
+        guiaModal.style.display = 'none';
+        window.currentGuiaId = null;
+        window.currentGuiaData = null;
+    });
+    closeGuiaBtn.addEventListener('click', () => {
         const guiaModal = document.getElementById('guia-modal');
         guiaModal.style.display = 'none';
         window.currentGuiaId = null;
