@@ -1,4 +1,4 @@
-import { getAuth } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js';
+import { getAuth, setPersistence, inMemoryPersistence } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js';
 import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, getDocs, query, where, serverTimestamp, getDoc } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js';
 
@@ -15,6 +15,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// Deshabilitar persistencia en Local Storage
+setPersistence(auth, inMemoryPersistence)
+  .then(() => {
+    console.log('Persistencia de autenticación configurada en memoria.');
+  })
+  .catch((error) => {
+    console.error('Error al configurar persistencia:', error);
+  });
 
 function formatDateForTable(dateStr) {
     if (!dateStr) return '-';
