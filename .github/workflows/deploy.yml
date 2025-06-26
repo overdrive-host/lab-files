@@ -1,4 +1,4 @@
-```yaml
+yaml
    name: Deploy to GitHub Pages
 
    on:
@@ -19,4 +19,3 @@
              github_token: ${{ secrets.GITHUB_TOKEN }}
              publish_dir: ./  # Publica todo desde la raíz
              force_orphan: true  # Fuerza una reconstrucción limpia
-   ```
