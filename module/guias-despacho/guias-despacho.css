@@ -136,7 +136,7 @@
 }
 
 .module-content {
-    max-height: 750px;
+    max-height: 400px;
     overflow-y: auto;
     border-radius: 8px;
 }
@@ -325,39 +325,59 @@
     margin-top: 24px;
 }
 
-#success-modal .modal-content {
-    text-align: center;
-    padding: 40px;
-    max-width: 400px;
+.notification-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    animation: slideInRight 0.3s ease;
 }
 
-#success-modal .success {
+.notification-content {
+    text-align: center;
+    padding: 20px;
+    max-width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.notification-content.success {
     background: #065f46;
     color: #e5e7eb;
 }
 
-#success-modal .error {
+.notification-content.error {
     background: #7f1d1d;
     color: #e5e7eb;
 }
 
-#success-modal i {
-    font-size: 2.5rem;
-    margin-bottom: 16px;
+.notification-content i {
+    font-size: 2rem;
+    margin-bottom: 12px;
 }
 
-#success-modal .success i {
+.notification-content.success i {
     color: #34d399;
 }
 
-#success-modal .error i {
+.notification-content.error i {
     color: #f87171;
 }
 
-#success-modal .success-message {
-    font-size: 1.125rem;
+.notification-content .success-message {
+    font-size: 1rem;
     font-weight: 500;
     color: #e5e7eb;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
 }
 
 #delete-modal .modal-content {
@@ -427,5 +447,12 @@
     .table th, .table td {
         font-size: 0.75rem;
         padding: 8px;
+    }
+
+    .notification-toast {
+        top: 10px;
+        right: 10px;
+        width: 90%;
+        max-width: 280px;
     }
 }
