@@ -22,23 +22,29 @@ function formatDateForTable(dateStr) {
     return `${day}-${month}-${year}`;
 }
 
-function showSuccessModal(message, isError = false) {
-    const successModal = document.getElementById('success-modal');
+function showNotification(message, isError = false) {
+    const notificationToast = document.getElementById('notification-toast');
     const successIcon = document.getElementById('success-icon');
     const successMessage = document.querySelector('.success-message');
     
-    if (!successModal || !successIcon || !successMessage) {
+    if (!notificationToast || !successIcon || !successMessage) {
         alert(isError ? `Error: ${message}` : `Éxito: ${message}`);
         return;
     }
 
     successIcon.className = `fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}`;
     successMessage.textContent = message;
-    successModal.classList.remove('success', 'error');
-    successModal.classList.add(isError ? 'error' : 'success');
-    successModal.style.display = 'block';
+    notificationToast.classList.remove('success', 'error');
+    notificationToast.classList.add(isError ? 'error' : 'success');
+    notificationToast.style.display = 'block';
+    
+    // Añadir animación de salida
     setTimeout(() => {
-        successModal.style.display = 'none';
+        notificationToast.style.animation = 'slideOutRight 0.3s ease forwards';
+        setTimeout(() => {
+            notificationToast.style.display = 'none';
+            notificationToast.style.animation = 'slideInRight 0.3s ease';
+        }, 300);
     }, 3000);
 }
 
@@ -46,7 +52,7 @@ async function loadGuias(searchTerm = '') {
     const guiasList = document.getElementById('guias-list');
     const loadingScreen = document.getElementById('loadingScreen');
     if (!guiasList) {
-        showSuccessModal('Error: No se pudo cargar la lista de guías.', true);
+        showNotification('Error: No se pudo cargar la lista de guías.', true);
         return;
     }
 
@@ -95,7 +101,7 @@ async function loadGuias(searchTerm = '') {
         }
     } catch (error) {
         console.error('Error al cargar guías:', error);
-        showSuccessModal(`Error al cargar guías: ${error.message}`, true);
+        showNotification(`Error al cargar guías: ${error.message}`, true);
     } finally {
         if (loadingScreen) loadingScreen.style.display = 'none';
     }
@@ -209,7 +215,7 @@ function generatePDF(data) {
 function openEditModal(id = null, guia = null) {
     const guiaModal = document.getElementById('guia-modal');
     if (!guiaModal) {
-        showSuccessModal('Error: No se pudo abrir el modal.', true);
+        showNotification('Error: No se pudo abrir el modal.', true);
         return;
     }
 
@@ -250,7 +256,7 @@ function openEditModal(id = null, guia = null) {
 function openDeleteModal(id) {
     const deleteModal = document.getElementById('delete-modal');
     if (!deleteModal) {
-        showSuccessModal('Error: No se pudo abrir el modal de eliminación.', true);
+        showNotification('Error: No se pudo abrir el modal de eliminación.', true);
         return;
     }
     window.currentGuiaId = id;
@@ -260,13 +266,13 @@ function openDeleteModal(id) {
 async function saveGuia() {
     const loadingScreen = document.getElementById('loadingScreen');
     if (!window.currentGuiaData) {
-        showSuccessModal('No hay datos de guía para guardar.', true);
+        showNotification('No hay datos de guía para guardar.', true);
         return;
     }
 
     const { folio, fechaEmision, razonSocial, detalles } = window.currentGuiaData;
     if (!folio || !fechaEmision || !razonSocial || !detalles || detalles.length === 0) {
-        showSuccessModal('Faltan datos requeridos en el XML.', true);
+        showNotification('Faltan datos requeridos en el XML.', true);
         return;
     }
 
@@ -289,7 +295,7 @@ async function saveGuia() {
                 fechaModificacion: serverTimestamp()
             };
             await updateDoc(guiaRef, guiaData);
-            showSuccessModal('Guía actualizada correctamente.');
+            showNotification('Guía actualizada correctamente.');
         } else {
             const guiaData = {
                 uid: user.uid,
@@ -301,7 +307,7 @@ async function saveGuia() {
             };
             const guiaRef = await addDoc(collection(db, 'guiasDespacho'), guiaData);
             guiaId = guiaRef.id;
-            showSuccessModal('Guía creada correctamente.');
+            showNotification('Guía creada correctamente.');
         }
 
         loadGuias();
@@ -311,7 +317,7 @@ async function saveGuia() {
         window.currentGuiaData = null;
     } catch (error) {
         console.error('Error detallado:', error);
-        showSuccessModal(`Error al guardar guía: ${error.message}`, true);
+        showNotification(`Error al guardar guía: ${error.message}`, true);
     } finally {
         if (loadingScreen) loadingScreen.style.display = 'none';
     }
@@ -337,14 +343,14 @@ async function deleteGuia() {
         }
 
         await deleteDoc(guiaRef);
-        showSuccessModal('Guía eliminada correctamente.');
+        showNotification('Guía eliminada correctamente.');
         loadGuias();
         const deleteModal = document.getElementById('delete-modal');
         deleteModal.style.display = 'none';
         window.currentGuiaId = null;
     } catch (error) {
         console.error('Error al eliminar guía:', error);
-        showSuccessModal(`Error al eliminar guía: ${error.message}`, true);
+        showNotification(`Error al eliminar guía: ${error.message}`, true);
     } finally {
         if (loadingScreen) loadingScreen.style.display = 'none';
     }
@@ -369,19 +375,19 @@ function initializeModule() {
         'delete-modal': 'Modal de eliminación',
         'confirm-delete-btn': 'Botón para confirmar eliminación',
         'cancel-delete-btn': 'Botón para cancelar eliminación',
-        'success-modal': 'Modal de éxito',
+        'notification-toast': 'Notificación de éxito',
         'success-icon': 'Ícono de éxito'
     };
 
     for (const [id, description] of Object.entries(requiredElements)) {
         if (!document.getElementById(id)) {
-            showSuccessModal(`Error: No se encontró el elemento ${description}.`, true);
+            showNotification(`Error: No se encontró el elemento ${description}.`, true);
             return;
         }
     }
 
     if (!document.querySelector('.success-message')) {
-        showSuccessModal('Error: No se encontró el elemento Mensaje de éxito.', true);
+        showNotification('Error: No se encontró el elemento Mensaje de éxito.', true);
         return;
     }
 
@@ -403,7 +409,7 @@ function initializeModule() {
     saveGuiaBtn.addEventListener('click', saveGuia);
     downloadPdfBtn.addEventListener('click', () => {
         if (!window.currentGuiaData) {
-            showSuccessModal('No hay datos de guía para visualizar PDF.', true);
+            showNotification('No hay datos de guía para visualizar PDF.', true);
             return;
         }
         const pdfDoc = generatePDF(window.currentGuiaData);
@@ -440,13 +446,13 @@ function initializeModule() {
             const xmlDoc = parser.parseFromString(xmlString, "text/xml");
 
             if (!xmlDoc.querySelector("DTE")) {
-                showSuccessModal('El archivo XML no es un DTE válido.', true);
+                showNotification('El archivo XML no es un DTE válido.', true);
                 return;
             }
 
             const encabezado = xmlDoc.querySelector("Encabezado");
             if (!encabezado) {
-                showSuccessModal('El XML no contiene un elemento <Encabezado>.', true);
+                showNotification('El XML no contiene un elemento <Encabezado>.', true);
                 return;
             }
 
@@ -455,7 +461,7 @@ function initializeModule() {
             const detalles = xmlDoc.querySelectorAll("Detalle");
 
             if (!idDoc || !emisor) {
-                showSuccessModal('El XML no contiene los elementos requeridos (IdDoc, Emisor).', true);
+                showNotification('El XML no contiene los elementos requeridos (IdDoc, Emisor).', true);
                 return;
             }
 
@@ -494,12 +500,12 @@ function initializeModule() {
                     isNaN(d.cantidad)
                 )
             ) {
-                showSuccessModal('El XML no contiene datos válidos o completos.', true);
+                showNotification('El XML no contiene datos válidos o completos.', true);
                 return;
             }
 
             if (!/^\d{4}-\d{2}-\d{2}$/.test(guiaData.fechaEmision)) {
-                showSuccessModal('La fecha de emisión en el XML no tiene el formato correcto (AAAA-MM-DD).', true);
+                showNotification('La fecha de emisión en el XML no tiene el formato correcto (AAAA-MM-DD).', true);
                 return;
             }
 
@@ -519,17 +525,17 @@ function initializeModule() {
         if (user) {
             loadGuias();
         } else {
-            showSuccessModal('Error: Usuario no autenticado. Por favor, inicia sesión.', true);
+            showNotification('Error: Usuario no autenticado. Por favor, inicia sesión.', true);
         }
     });
 
     window.addEventListener('moduleCleanup', () => {
         const guiaModal = document.getElementById('guia-modal');
         const deleteModal = document.getElementById('delete-modal');
-        const successModal = document.getElementById('success-modal');
+        const notificationToast = document.getElementById('notification-toast');
         if (guiaModal) guiaModal.style.display = 'none';
         if (deleteModal) deleteModal.style.display = 'none';
-        if (successModal) successModal.style.display = 'none';
+        if (notificationToast) notificationToast.style.display = 'none';
         window.currentGuiaId = null;
         window.currentGuiaData = null;
     });
