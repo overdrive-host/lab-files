@@ -102,12 +102,6 @@
     color: #ffffff;
 }
 
-.btn-secondary {
-    background-color: inherit;
-    color: inherit;
-    display: none;
-}
-
 .btn-secondary:hover {
     background-color: #4b5563;
     transform: translateY(-1px);
@@ -125,6 +119,28 @@
     box-shadow: 0 4px 8px rgba(239, 68, 68, 0.4);
 }
 
+.close-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #e5e7eb;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-modal-btn:hover {
+    color: #3b82f6;
+}
+
+.module-content {
+    max-height: 800px;
+    overflow-y: auto;
+    border-radius: 8px;
+}
+
 .list-group {
     list-style: none;
     padding: 0;
@@ -132,14 +148,15 @@
 
 .list-group li {
     background: #374151;
-    padding: 16px 24px;
-    margin-bottom: 12px;
+    padding: 8px 16px;
+    margin-bottom: 8px;
     border-radius: 8px;
     border: 1px solid #4b5563;
     display: flex;
     justify-content: space-between;
     align-items: center;
     transition: background-color 0.2s;
+    min-height: 40px;
 }
 
 .list-group li:hover {
@@ -148,21 +165,21 @@
 
 .guia-titulo {
     cursor: pointer;
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-weight: 600;
     color: #e5e7eb;
 }
 
 .guia-info span {
-    margin-right: 24px;
+    margin-right: 16px;
     color: #9ca3af;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
 }
 
 .guia-actions i {
-    margin-left: 24px;
+    margin-left: 16px;
     cursor: pointer;
-    font-size: 1.25rem;
+    font-size: 1rem;
     color: #3b82f6;
     transition: color 0.2s;
 }
@@ -199,6 +216,7 @@
     border: 1px solid #4b5563;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     animation: slideIn 0.3s ease;
+    position: relative;
 }
 
 @keyframes slideIn {
@@ -285,6 +303,10 @@
     background: #4b5563;
     font-weight: 600;
     font-size: 1rem;
+}
+
+.table th:first-child {
+    width: 10%;
 }
 
 .table td {
@@ -378,14 +400,14 @@
     .list-group li {
         flex-direction: column;
         align-items: flex-start;
-        gap: 12px;
-        padding: 16px;
+        gap: 8px;
+        padding: 8px;
     }
 
     .guia-info span {
         display: block;
         margin-right: 0;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
 
     .modal-content {
